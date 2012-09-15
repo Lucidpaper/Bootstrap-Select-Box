@@ -34,7 +34,7 @@
     	var that = this;
     	var o = opts;
     	var caret_node = "&nbsp;<span class='caret'></span>";
-    	var prefix = (o.prefix) ? o.prefix + "&nbsp;" : null;
+    	var prefix = (o.prefix) ? o.prefix : null;
 
    		//These will be attached to the current node
 	    if ( icon_class ) {
@@ -43,7 +43,8 @@
 
     	//Update variables
     	// If there is a prefix, strip it before setting the variable
-    	current_text = (prefix) ? $(current_a_node).text().replace(prefix,'') : $(current_a_node).text();
+    	tmp_current_text = $(current_a_node).text();
+    	current_text = tmp_current_text.replace(prefix,'');
     	current_href = $(current_a_node).attr("href");
     	updated_href = $(this).attr("href");
     	updated_text = $(this).text();
@@ -57,7 +58,7 @@
     	
     	if (prefix)
     	{
-    		selected_str += prefix + "&nbsp;";
+    		selected_str += prefix;
     	}
 
     	selected_str += updated_text + caret_node;
