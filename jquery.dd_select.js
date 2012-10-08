@@ -1,7 +1,9 @@
 (function( $ ) {
   $.fn.dd_select = function( options ) {
-  	// Create some defaults, extending them with any options that were provided
+    // Create some defaults, extending them with any options that were provided
     var opts = $.extend({}, $.fn.dd_select.defaults, options);
+
+    $.fn.dd_select.set_default(opts);
 
     //Get dropdown list items
     var dd_li = this.find("li");
@@ -30,11 +32,21 @@
     	var icon_class = $(current_a_node).find("> i").attr("class");
     }
 
+    var set_hidden_field = function(hiddenFieldName, formID) {
+        val = updated_href.replace("#","");
+        $("input[name=" + hiddenFieldName + "]").val( val );
+    }
+
     return dd_li.on("click", "a", function(){
     	var that = this;
     	var o = opts;
+        var default_option = o.default;
     	var caret_node = "&nbsp;<span class='caret'></span>";
     	var prefix = (o.prefix) ? o.prefix : null;
+        var hiddenFieldName = (o.hiddenFieldName) ? o.hiddenFieldName : null;
+        var formID = (o.formID) ? o.formID : null;
+        var submitOnChange = (o.submitOnChange) ? o.submitOnChange : null;
+        var ajax_call = (o.ajax_call) ? o.ajax_call : null;
 
    		//These will be attached to the current node
 	    if ( icon_class ) {
@@ -48,6 +60,19 @@
     	current_href = $(current_a_node).attr("href");
     	updated_href = $(this).attr("href");
     	updated_text = $(this).text();
+
+        if (current_href == "#") {
+            console.log("empty")
+        }
+
+        if ( hiddenFieldName && formID) {
+            set_hidden_field( hiddenFieldName, formID );
+        }
+
+        // submit form each time select is changed
+        if (submitOnChange && formID) {
+            ajax_call.call();
+        }
 
     	// Change selected display text to just clicked option
     	// Construct String
@@ -76,12 +101,19 @@
 	 		$(this).attr("href", "#");
 	 		$(this).html("&nbsp;");
 	 	}
+
     });      
   };
+  // Default setting, not implemented
+  // $.fn.dd_select.set_default = function(opts){
+  //   defaults = opts.default;
+  //   console.log(defaults);
+  // };
+
   $.fn.dd_select.defaults = {
-  		form: null,
+  		formID: null,
   		prefix: null,
   		submitOnChange: false,
-  		submitButton: false
+  		hiddenFieldName: null
   };
 })( jQuery );
